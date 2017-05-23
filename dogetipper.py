@@ -22,7 +22,7 @@ class SoDogeTip():
 
         self.rpc_main = AuthServiceProxy("http://%s:%s@%s:%s" % (
             rpc_config['doge_rpc_username'], rpc_config['doge_rpc_password'], rpc_config['doge_rpc_host'],
-            rpc_config['doge_rpc_port']))
+            rpc_config['doge_rpc_port']), timeout=120)
 
         self.rpc_antispam = AuthServiceProxy("http://%s:%s@%s:%s" % (
             rpc_config['doge_rpc_username'], rpc_config['doge_rpc_password'], rpc_config['doge_rpc_host'],
@@ -79,7 +79,7 @@ class SoDogeTip():
 
                         elif split_message.count('+/u/sodogetiptest'):
                             self.mark_msg_read(msg)
-                            bot_command.tip_user(self.rpc_main, msg)
+                            bot_command.tip_user(self.rpc_main, self.reddit, msg)
 
                         else:
                             self.mark_msg_read(msg)
