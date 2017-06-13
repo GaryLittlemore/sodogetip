@@ -47,16 +47,16 @@ def get_unregistered_tip():
     return data
 
 
-def save_unregistered_tip(sender, receiver, amount, message_fullname):
-    bot_logger.logger.info("Save tip form %s to %s " % (sender, receiver))
+def save_unregistered_tip(tip):
+    bot_logger.logger.info("Save tip form %s to %s " % (tip.sender.username, tip.receiver.username))
     db = TinyDB(DATA_PATH + bot_config['unregistered_tip_user'])
     db.insert({
-        'id': random.randint(0, 99999999),
-        'amount': amount,
-        'receiver': receiver,
-        'sender': sender,
-        'message_fullname': message_fullname,
-        'time': datetime.datetime.now().isoformat(),
+        'id': tip.id,
+        'amount': tip.amount,
+        'receiver': tip.receiver.username,
+        'sender': tip.sender.username,
+        'message_fullname': tip.message_fullname,
+        'time': tip.time,
     })
     db.close()
 
@@ -65,31 +65,6 @@ def remove_pending_tip(id_tip):
     db = TinyDB(DATA_PATH + bot_config['unregistered_tip_user'])
     tip = Query()
     db.remove(tip.id == id_tip)
-    db.close()
-
-
-def get_user_history(user):
-    db = TinyDB(DATA_PATH + bot_config['user_history_path'] + user + '.json')
-    data = db.all()
-    db.close()
-    return data
-
-
-def add_to_history(user_history, sender, receiver, amount, action, finish=True, tx_id =""):
-    bot_logger.logger.info("Save for history user=%s, sender=%s, receiver=%s, amount=%s, action=%s, finish=%s" % (
-        user_history, sender, receiver, amount, action, finish))
-
-    db = TinyDB(DATA_PATH + bot_config['user_history_path'] + user_history + '.json')
-    db.insert({
-        "user": user_history,
-        "sender": sender,
-        "receiver": receiver,
-        "amount": amount,
-        "action": action,
-        "finish": finish,
-        "tx_id": tx_id,
-        'time': datetime.datetime.now().isoformat(),
-    })
     db.close()
 
 
